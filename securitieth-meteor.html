@@ -1,0 +1,52 @@
+<head>
+  <title>securitieth-meteor</title>
+</head>
+
+<body>
+  <div class="container center-align">
+  <div class="row">
+    <div class="col s12">
+      <h1>Securitieth Explorer</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col m5">
+      <input type="text" placeholder="Enter Registry Address"/>
+    </div>
+    <div class="col m2">
+      or
+    </div>
+    <div class="col m5">
+      <a href="#" class='btn btn-block create-registry'>Create a registry</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s12">
+      {{> securities}}
+    </div>
+  </div>
+  </div>
+</body>
+
+<template name="securities">
+  {{#each securities}}
+    {{> security}}
+  {{/each}}
+</template>
+
+<template name="security">
+  <div class="security card">
+    <div class="card-content">
+      <h4>Security {{address}}</h4>
+      {{#each cas}}
+        {{#with getCA .}}
+          {{> ca}}
+        {{/with}}
+      {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="ca">
+  <p>Hello CA {{type}}</p>
+</template>
