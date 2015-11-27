@@ -3,33 +3,42 @@
 </head>
 
 <body>
+  {{> explorer}}
+</body>
+
+<template name="explorer">
   <div class="container center-align">
   <div class="row">
     <div class="col s12">
       <h1>Securitieth Explorer</h1>
     </div>
   </div>
-  <div class="row">
-    <div class="col m5">
-      <input type="text" placeholder="Enter Registry Address"/>
+  {{#if getVar 'registryAddr'}}
+      <h2>Registry: {{getVar 'registryAddr'}}</h2>
+      <div class="row">
+        <div class="col s12">
+          {{> securities}}
+        </div>
+      </div>
+  {{else}}
+    <div class="row">
+      <div class="col m5">
+        <input class='set-registry' type="text" placeholder="Enter Registry Address"/>
+      </div>
+      <div class="col m2">
+        or
+      </div>
+      <div class="col m5">
+        <a href="#" class='btn btn-block create-registry'>Create a registry</a>
+      </div>
     </div>
-    <div class="col m2">
-      or
-    </div>
-    <div class="col m5">
-      <a href="#" class='btn btn-block create-registry'>Create a registry</a>
-    </div>
+  {{/if}}
   </div>
-  <div class="row">
-    <div class="col s12">
-      {{> securities}}
-    </div>
-  </div>
-  </div>
-</body>
+</template>
 
 <template name="securities">
-  {{#each securities}}
+  <div class="btn create-security">New Security</div>
+  {{#each first10}}
     {{> security}}
   {{/each}}
 </template>
@@ -38,10 +47,10 @@
   <div class="security card">
     <div class="card-content">
       <h4>Security {{address}}</h4>
+      <p>{{getBalance}}</p>
+      <div class="btn">Add Token</div>
       {{#each cas}}
-        {{#with getCA .}}
-          {{> ca}}
-        {{/with}}
+        {{> ca}}
       {{/each}}
     </div>
   </div>

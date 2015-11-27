@@ -2,9 +2,9 @@ contract corpAct{
     function execute(address sender, uint amount, uint extraData){}
 }
 
-// contract securityRegistry{
-// 	function add(){}
-// }
+contract securityRegistry{
+	function add(){}
+}
 
 contract security{
 
