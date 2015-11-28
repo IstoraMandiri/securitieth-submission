@@ -2,9 +2,9 @@
   <p>Corp Action {{type}} - {{address}} - Wei: {{balance}}</p>
   {{#each methods}}
     <p>Method: {{name}} {{value}}</p>
-    {{#if $eq name 'execute'}}
-      <div class="btn execute-action">EXECUTE</div>
-    {{/if}}
   {{/each}}
+  {{#if stateBalance}}
+    <div class="btn execute-action">Execute {{stateBalance}}</div>
+  {{/if}}
   <!-- TODO special UI for vote showing outcomes -->
 </template>

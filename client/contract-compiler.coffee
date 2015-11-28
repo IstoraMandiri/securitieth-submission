@@ -16,14 +16,20 @@ contract corpAct{
 }
 
 contract securityRegistry{
-    mapping(uint=>address) public registry;
+
+    function securityRegistry(string name){
+        title = name;
+    }
+
+    string public title;
     uint count;
+    mapping(uint=>address) public registry;
+
     function add(){
         registry[count] = msg.sender;
         count++;
     }
 }
-
 
 contract security{
 

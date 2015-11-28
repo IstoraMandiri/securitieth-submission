@@ -4,11 +4,14 @@
   <div class="row">
     <div class="col s12">
       <h1>Securitieth Explorer</h1>
+      <h3>Your Eth: {{myEth}}</h3>
     </div>
   </div>
-  {{#if getVar 'registryAddr'}}
+  {{#if registry.address}}
+      <h2>{{registry.title}}</h2>
+      <p>{{registry.address}}</p>
       <div class="btn refresh">Refresh</div>
-      <p>Registry: {{getVar 'registryAddr'}}</p>
+      <hr>
       <div class="row">
         <div class="col s12">
           <div class="btn create-security">New Security</div>

@@ -34,7 +34,7 @@ corporateActions = [
 Template.security.helpers
   availableActions : corporateActions
 
-  allStates: -> [0...@currentState().toNumber()]
+  allStates: -> [0..@currentState().toNumber()]
 
   accountStates: ->
     # create accounts object
@@ -43,7 +43,7 @@ Template.security.helpers
       thisAccount =
         address: @accounts(i)
         balances: []
-      for j in [0...@currentState().toNumber()]
+      for j in [0..@currentState().toNumber()]
         thisAccount.balances.push @balances(thisAccount.address, j).toNumber()
       accounts.push thisAccount
     console.log accounts
@@ -76,7 +76,7 @@ Template.security.events
         if web3.isAddress(to)
           complete = true
           # always send from latest state
-          @sendCoin to, amount, state, {gas: 3000000}, (err,res) ->
+          @sendCoin.sendTransaction to, amount, state, {gas: 3000000}, (err,res) ->
             # get the transaction result and track it for updates
             console.log 'did the thing', err, res
 
@@ -145,7 +145,7 @@ Template.security.events
       if err
         alert err
       else if res.address
-        parentContract.addCorporateAction res.address, @key, {gas: 3000000}, (err,res) ->
+        parentContract.addCorporateAction.sendTransaction res.address, @key, {gas: 3000000}, (err,res) ->
           # get the transaction result and track it for updates
           console.log err, res
 

@@ -1,7 +1,7 @@
 
 Session.set('registryItems', [])
 
-@updateRegistry = ->
+getUpdatedRegistry = ->
   mainRegistry = Contracts.securityRegistry.at(Session.get('registryAddr'))
   registryItems = []
   for i in [0...100]
@@ -12,30 +12,28 @@ Session.set('registryItems', [])
       break
     else
       registryItems.push securityAddress
+  return registryItems
 
+@updateRegistry = ->
+  registryItems = getUpdatedRegistry()
   Session.set('registryItems', [])
   Tracker.flush()
   Session.set('registryItems', registryItems)
 
-Meteor.startup ->
-  setTimeout ->
-    updateRegistry()
-  , 500
-
-UI.registerHelper 'getVar', (key) -> Session.get(key)
-
 # TODO - listen to all events and rerender with mongo; nice pattern :)
-
-
 
 Template.registry.events
   'click .refresh' : -> updateRegistry()
 
   'click .create-registry' : ->
-    # let's deploy this shit
-    Contracts.securityRegistry.new
+    unless title = prompt "Name Regsitry (32 chars or less)"
+      alert 'tx cancelled'
+      return false
+
+    # deploy new securities contracts
+    Contracts.securityRegistry.new title,
        data: Contracts.securityRegistry.code
-       gas: 2000000
+       gas: 3000000
     , (err,res) ->
       if err
         alert err
@@ -46,7 +44,7 @@ Template.registry.events
     Session.set 'registryAddr', e.currentTarget.value
     setTimeout ->
       updateRegistry()
-    , 500
+    , 1000
 
   'click .create-security' : ->
     # the current registry is
@@ -54,7 +52,7 @@ Template.registry.events
       amount = parseInt prompt 'How many starting coins?'
       Contracts.security.new amount, Session.get('registryAddr'), securityName,
          data: Contracts.security.code
-         gas: 2000000
+         gas: 3000000
       , (err,res) ->
         if err
           console.log err
@@ -63,6 +61,28 @@ Template.registry.events
     else
       alert 'Cancelled'
 
+
+# Session.set('registryAddr', false)
+
+Template.registry.onCreated ->
+
+  @myEth = new ReactiveVar();
+
+  @handle = Meteor.setInterval =>
+    @myEth.set Math.round(web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0]).toNumber(), "ether") * 100) / 100
+  , 2000
+
+Template.registry.onDestroyed ->
+  Meteor.clearInterval @handle
+
 Template.registry.helpers
+  myEth: ->
+    Template.instance().myEth.get()
+
+  registry: ->
+    if registryAddr = Session.get('registryAddr')
+      if Contracts.securityRegistry
+        return Contracts.securityRegistry.at registryAddr
+
   securities: ->
-    _.map Session.get('registryItems'), (addr) -> Contracts.security.at(addr)
+    _.map Session.get('registryItems'), (addr) -> Contracts.security.at addr
