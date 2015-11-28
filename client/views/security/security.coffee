@@ -1,74 +1,4 @@
 
-Session.set('registryItems', [])
-
-gasLimit = -> 3000000
-
-updateRegistry = ->
-  mainRegistry = Contracts.securityRegistry.at(Session.get('registryAddr'))
-  registryItems = []
-  for i in [0...100]
-    securityAddress = mainRegistry.registry(i)
-    if !securityAddress \
-    or securityAddress is '0x0000000000000000000000000000000000000000' \
-    or securityAddress is '0x'
-      break
-    else
-      registryItems.push securityAddress
-
-  Session.set('registryItems', [])
-  Tracker.flush()
-  Session.set('registryItems', registryItems)
-
-Meteor.startup ->
-  setTimeout ->
-    updateRegistry()
-  , 500
-
-UI.registerHelper 'getVar', (key) -> Session.get(key)
-
-# TODO - listen to all events and rerender with mongo; nice pattern :)
-
-Template.explorer.events
-  'click .refresh' : -> updateRegistry()
-
-  'click .create-registry' : ->
-    # let's deploy this shit
-    Contracts.securityRegistry.new
-       data: Contracts.securityRegistry.code
-       gas: 2000000
-    , (err,res) ->
-      if err
-        console.log err
-      else if res.address
-        Session.set 'registryAddr', res.address
-
-  'change .set-registry' : (e) ->
-    Session.set 'registryAddr', e.currentTarget.value
-    setTimeout ->
-      updateRegistry()
-    , 500
-
-
-Template.securities.helpers
-  securities: ->
-    _.map Session.get('registryItems'), (addr) -> {address:addr}
-
-Template.securities.events
-  'click .create-security' : ->
-    # the current registry is
-    if securityName = prompt 'Security name? (32 chars or less)'
-      amount = parseInt prompt 'How many starting coins?'
-      Contracts.security.new amount, Session.get('registryAddr'), securityName,
-         data: Contracts.security.code
-         gas: 2000000
-      , (err,res) ->
-        if err
-          console.log err
-        else if res.address
-          updateRegistry()
-    else
-      alert 'Cancelled'
-
 corporateActions = [
   key:'coupon'
   name: 'Create Coupon'
@@ -104,20 +34,32 @@ corporateActions = [
 Template.security.helpers
   availableActions : corporateActions
 
-  security: ->
-    Contracts.security.at(@address)
+  allStates: -> [0...@currentState().toNumber()]
 
-  getLatestBalance: ->
-    thisContract = Contracts.security.at(@address)
-    currentState = parseInt(thisContract.currentState())
-    thisContract.balances(web3.eth.accounts[0]).toNumber()
+  accountStates: ->
+    # create accounts object
+    accounts = []
+    for i in [0...@accountsCount().toNumber()]
+      thisAccount =
+        address: @accounts(i)
+        balances: []
+      for j in [0...@currentState().toNumber()]
+        thisAccount.balances.push @balances(thisAccount.address, j).toNumber()
+      accounts.push thisAccount
+    console.log accounts
+    return accounts
+
+  myLatestState: ->
+    @latestState(web3.eth.accounts[0]).toNumber()
+
+  getBalance: (state) ->
+    @balances(web3.eth.accounts[0], state).toNumber()
 
   getCorporateActions: ->
-    thisSecurity = Contracts.security.at(@address)
     cas = []
-    for i in [0...parseInt(thisSecurity.currentState())]
-      type = thisSecurity.cAContractsType(i).toString()
-      address = thisSecurity.cAContracts(i).toString()
+    for i in [0...parseInt(@currentState())]
+      type = @cAContractsType(i).toString()
+      address = @cAContracts(i).toString()
       caContract = Contracts[type].at(address)
       caContract.type = type
       cas.push caContract
@@ -125,6 +67,23 @@ Template.security.helpers
 
 
 Template.security.events
+  'click .send-coin' : (e, tmpl) ->
+    console.log 'sending coin :)', @
+    state = parseInt prompt "From which state?"
+    if state or state is 0
+      if amount = parseInt prompt "How many to send?"
+        to = prompt "Who to send to? (address)"
+        if web3.isAddress(to)
+          complete = true
+          # always send from latest state
+          @sendCoin to, amount, state, {gas: 3000000}, (err,res) ->
+            # get the transaction result and track it for updates
+            console.log 'did the thing', err, res
+
+    unless complete
+      alert 'Cancelled TX'
+
+
   'click .add-corporate-action' : (e, tmpl) ->
     thisContract = Contracts[@key]
     parentContract = Contracts.security.at(tmpl.data.address)
@@ -169,7 +128,7 @@ Template.security.events
     # this argument is for deployment transaction data
     txData =
       data: thisContract.code
-      gas: gasLimit()
+      gas: 3000000
 
     # if this CA requires ether, let's send it some
     if @funded
@@ -184,23 +143,12 @@ Template.security.events
     # add the callback
     args.push (err,res) =>
       if err
+        alert err
       else if res.address
-        parentContract.addCorporateAction res.address, @key, {gas: gasLimit()}, (err, res) ->
-          updateRegistry()
+        parentContract.addCorporateAction res.address, @key, {gas: 3000000}, (err,res) ->
+          # get the transaction result and track it for updates
+          console.log err, res
+
 
     # deploy the contract
     thisContract.new.apply(thisContract, args)
-
-Template.ca.helpers
-  balance: ->
-    web3.eth.getBalance(@address)
-
-  methods: ->
-    methods = []
-    for method in _.clone @abi
-      thisMethod = _.clone method
-      if method.type isnt 'constructor'
-        if method.constant
-          thisMethod.value = @[method.name]()
-        methods.push thisMethod
-    return methods

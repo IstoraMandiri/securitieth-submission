@@ -1,0 +1,10 @@
+<template name="corpAction">
+  <p>Corp Action {{type}} - {{address}} - Wei: {{balance}}</p>
+  {{#each methods}}
+    <p>Method: {{name}} {{value}}</p>
+    {{#if $eq name 'execute'}}
+      <div class="btn execute-action">EXECUTE</div>
+    {{/if}}
+  {{/each}}
+  <!-- TODO special UI for vote showing outcomes -->
+</template>

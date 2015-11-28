@@ -1,0 +1,34 @@
+
+<template name="registry">
+  <div class="container center-align">
+  <div class="row">
+    <div class="col s12">
+      <h1>Securitieth Explorer</h1>
+    </div>
+  </div>
+  {{#if getVar 'registryAddr'}}
+      <div class="btn refresh">Refresh</div>
+      <p>Registry: {{getVar 'registryAddr'}}</p>
+      <div class="row">
+        <div class="col s12">
+          <div class="btn create-security">New Security</div>
+          {{#each securities}}
+            {{> security}}
+          {{/each}}
+        </div>
+      </div>
+  {{else}}
+    <div class="row">
+      <div class="col m5">
+        <input class='set-registry' type="text" placeholder="Enter Registry Address"/>
+      </div>
+      <div class="col m2">
+        or
+      </div>
+      <div class="col m5">
+        <a href="#" class='btn btn-block create-registry'>Create a registry</a>
+      </div>
+    </div>
+  {{/if}}
+  </div>
+</template>

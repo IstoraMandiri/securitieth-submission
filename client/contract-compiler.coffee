@@ -32,14 +32,26 @@ contract security{
         title = name;
         balances[msg.sender][0] = quant;
         issuer = msg.sender;
+        accounts.push(msg.sender);
+        accountsTracker[msg.sender] = true;
+        accountsCount++;
     }
 
     function sendCoin(address recipient, uint amount, uint state) returns (bool successful){
         if (balances[msg.sender][state] < amount) return false;
+
+        // add recipient to list of accounts, if it doesn't exist
+        if(!accountsTracker[recipient]) {
+            accounts.push(recipient);
+            accountsTracker[recipient] = true;
+            accountsCount++;
+        }
+
         balances[msg.sender][state] -= amount;
         balances[recipient][state] += amount;
         return true;
     }
+
     function runCA(uint amount, uint state, uint extra){
         if (balances[msg.sender][state] < amount) return;
         corpAct(cAContracts[state]).execute(msg.sender, amount, extra);
@@ -60,9 +72,20 @@ contract security{
 
         var bal = int(balances[account][state]) + amount;
         balances[account][state] = uint(bal);
+
+        // record this account's most recent state
+        if(latestState[account] < state){
+            latestState[account] = state;
+        }
+
         return;
 
     }
+
+    // this is because i suck at solidity
+    address[] public accounts;
+    uint public accountsCount;
+    mapping(address=>bool) accountsTracker;
 
     string public title;
     address public issuer;
@@ -70,6 +93,7 @@ contract security{
     mapping(uint => address) public cAContracts;
     mapping(uint => string) public cAContractsType;
 
+    mapping(address =>uint) public latestState;
     mapping(address =>mapping(uint=>uint)) public balances;
 }
 
@@ -186,7 +210,7 @@ contract stockSplit is corpAct{
     function execute(address sender, uint amount, uint extraData){
         if (msg.sender != parentSecurity) return;
         security(msg.sender).admin(corpAct,sender,-int(amount),corpAct);
-        security(msg.sender).admin(corpAct,sender,int(3*amount),corpAct+1);
+        security(msg.sender).admin(corpAct,sender,int(ratio*amount),corpAct+1);
     }
 
 }

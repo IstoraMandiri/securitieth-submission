@@ -1,0 +1,45 @@
+<template name="security">
+  <div class="security card">
+    <div class="card-content left-align">
+      <div class="btn send-coin">Send Coin</div>
+      <p>Security: {{address}}</p>
+      <p>Title: {{title}}</p>
+      <p>Issuer: {{issuer}}</p>
+      <p>Current State Balance: [{{myLatestState}}] {{getBalance myLatestState}}</p>
+      <p>Current State Balance: [{{currentState}}] {{getBalance currentState}}</p>
+      <p>Accounts Count: {{accountsCount}}</p>
+      <p>TODO: Balances</p>
+      <hr>
+      <table>
+        <thead>
+          <tr>
+            <th>Account</th>
+            {{#each allStates}}
+              <th>{{.}}</th>
+            {{/each}}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each accountStates}}
+            <tr>
+              <td>{{address}}</td>
+              {{#each balances}}
+                <td>
+                  {{.}}
+                </td>
+              {{/each}}
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <hr>
+      {{#each availableActions}}
+        <div class="btn add-corporate-action" title='{{description}}'>{{name}}</div>
+      {{/each}}
+      {{#each getCorporateActions}}
+        {{> corpAction}}
+        <hr class='divider'>
+      {{/each}}
+    </div>
+  </div>
+</template>

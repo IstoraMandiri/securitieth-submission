@@ -21,5 +21,6 @@ insecure                # Allow all DB writes from clients (for prototyping)
 
 coffeescript
 materialize:materialize
+raix:handlebar-helpers
 
 ethereum:web3
