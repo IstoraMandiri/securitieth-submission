@@ -41,13 +41,13 @@ contract security{
     }
     function runCA(uint amount, uint state, uint extra){
         if (balances[msg.sender][state] < amount) return;
-        cAContracts[state].execute(msg.sender, amount, extra);
+        corpAct(cAContracts[state]).execute(msg.sender, amount, extra);
     }
 
     //Issuer can add a corporate action contract
     function addCorporateAction(address contr){
         if (issuer !=msg.sender) return;
-        cAContracts[currentState] == contr;
+        cAContracts[currentState] = contr;
         currentState++;
     }
 
@@ -62,7 +62,7 @@ contract security{
     }
     address issuer;
     uint currentState;
-    mapping(uint => corpAct) cAContracts;
+    mapping(uint => address) cAContracts;
 
     mapping(address =>mapping(uint=>uint)) public balances;
 }
