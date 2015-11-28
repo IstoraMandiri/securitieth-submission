@@ -1,4 +1,15 @@
-@contractsSource = """
+@web3 = new Web3()
+web3.setProvider(new web3.providers.HttpProvider('http://localhost:8101'))
+web3.eth.defaultAccount = web3.eth.accounts[0]
+
+@Contracts = @Contracts || {}
+
+Meteor.startup ->
+    for key, val of web3.eth.compile.solidity(contractsSource)
+        Contracts[key] = web3.eth.contract(val.info.abiDefinition)
+        Contracts[key].code = val.code
+
+contractsSource = """
 
 contract corpAct{
     function execute(address sender, uint amount, uint extraData){}
@@ -13,12 +24,13 @@ contract securityRegistry{
     }
 }
 
+
 contract security{
 
     function security(uint quant,address registry){
-        securityRegistry(registry).add();
-        balances[msg.sender][0] = quant;
-        issuer = msg.sender;
+    securityRegistry(registry).add();
+    balances[msg.sender][0] = quant;
+    issuer = msg.sender;
     }
 
     function sendCoin(address recipient, uint amount, uint state) returns (bool successful){
@@ -48,12 +60,14 @@ contract security{
         return;
 
     }
-    address public issuer;
-    uint public currentState;
-    mapping(uint => corpAct) public cAContracts;
+    address issuer;
+    uint currentState;
+    mapping(uint => corpAct) cAContracts;
 
     mapping(address =>mapping(uint=>uint)) public balances;
 }
+
+
 
 //contract is funded with ether to pay the coupon
 contract coupon is corpAct{
@@ -170,6 +184,4 @@ contract stockSplit is corpAct{
     }
 
 }
-
 """
-

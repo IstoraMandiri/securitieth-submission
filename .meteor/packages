@@ -22,4 +22,4 @@ insecure                # Allow all DB writes from clients (for prototyping)
 coffeescript
 materialize:materialize
 
-ethereum:web3@=0.13.0
+ethereum:web3
