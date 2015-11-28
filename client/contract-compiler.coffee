@@ -27,10 +27,11 @@ contract securityRegistry{
 
 contract security{
 
-    function security(uint quant,address registry){
-    securityRegistry(registry).add();
-    balances[msg.sender][0] = quant;
-    issuer = msg.sender;
+    function security(uint quant, address registry, string name){
+        securityRegistry(registry).add();
+        title = name;
+        balances[msg.sender][0] = quant;
+        issuer = msg.sender;
     }
 
     function sendCoin(address recipient, uint amount, uint state) returns (bool successful){
@@ -45,9 +46,11 @@ contract security{
     }
 
     //Issuer can add a corporate action contract
-    function addCorporateAction(address contr){
-        if (issuer !=msg.sender) return;
+    function addCorporateAction(address contr, string kind){
+        if (issuer != msg.sender) return;
+        // TODO add check that currentState isn't being overwritten
         cAContracts[currentState] = contr;
+        cAContractsType[currentState] = kind;
         currentState++;
     }
 
@@ -60,9 +63,12 @@ contract security{
         return;
 
     }
-    address issuer;
-    uint currentState;
-    mapping(uint => address) cAContracts;
+
+    string public title;
+    address public issuer;
+    uint public currentState;
+    mapping(uint => address) public cAContracts;
+    mapping(uint => string) public cAContractsType;
 
     mapping(address =>mapping(uint=>uint)) public balances;
 }
@@ -126,7 +132,7 @@ contract proxyVote is corpAct{
     }
 
 }
-//contract i sfunded with ether to pay the redemption
+//contract is funded with ether to pay the redemption
 contract redemption is corpAct{
     function redemption(address parent, uint rate, uint ca){
         parentSecurity = parent;

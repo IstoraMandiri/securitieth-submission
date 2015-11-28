@@ -14,6 +14,7 @@
     </div>
   </div>
   {{#if getVar 'registryAddr'}}
+      <div class="btn refresh">Refresh</div>
       <p>Registry: {{getVar 'registryAddr'}}</p>
       <div class="row">
         <div class="col s12">
@@ -38,7 +39,7 @@
 
 <template name="securities">
   <div class="btn create-security">New Security</div>
-  {{#each first10}}
+  {{#each securities}}
     {{> security}}
   {{/each}}
 </template>
@@ -48,16 +49,23 @@
     <div class="card-content left-align">
       <p>Security: {{address}}</p>
       <p>Your Balance: {{getLatestBalance}}</p>
+      <p>Title: {{security.title}}</p>
       <p>Issuer: {{security.issuer}}</p>
       <p>State: {{security.currentState}}</p>
-      <div class="btn add-coupon">Add coupon</div>
+      {{#each availableActions}}
+        <div class="btn add-corporate-action" title='{{description}}'>{{name}}</div>
+      {{/each}}
       {{#each getCorporateActions}}
         {{> ca}}
+        <hr class='divider'>
       {{/each}}
     </div>
   </div>
 </template>
 
 <template name="ca">
-  <p>Hello CA {{.}}</p>
+  <p>Corp Action {{type}} - {{address}} - Wei: {{balance}}</p>
+  {{#each methods}}
+    <p>Method: {{name}} {{value}}</p>
+  {{/each}}
 </template>
