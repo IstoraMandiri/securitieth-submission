@@ -1,7 +1,6 @@
 <template name="security">
   <div class="security card">
     <div class="card-content left-align">
-      <div class="btn send-coin">Send Coin</div>
       <p>Security: {{address}}</p>
       <p>Title: {{title}}</p>
       <p>Issuer: {{issuer}}</p>
@@ -32,6 +31,11 @@
           {{/each}}
         </tbody>
       </table>
+      <hr>
+      <h2>Current Balance: {{getBalance myLatestState}}</h2>
+      {{#if getBalance myLatestState}}
+        <div class="btn send-coin">Send Coin</div>
+      {{/if}}
       <hr>
       {{#each availableActions}}
         <div class="btn add-corporate-action" title='{{description}}'>{{name}}</div>

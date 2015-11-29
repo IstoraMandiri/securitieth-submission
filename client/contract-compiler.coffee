@@ -22,7 +22,7 @@ contract securityRegistry{
     }
 
     string public title;
-    uint count;
+    uint public count;
     mapping(uint=>address) public registry;
 
     function add(){

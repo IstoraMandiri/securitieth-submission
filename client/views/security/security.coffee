@@ -67,22 +67,20 @@ Template.security.helpers
 
 
 Template.security.events
+
   'click .send-coin' : (e, tmpl) ->
-    console.log 'sending coin :)', @
-    state = parseInt prompt "From which state?"
-    if state or state is 0
-      if amount = parseInt prompt "How many to send?"
-        to = prompt "Who to send to? (address)"
-        if web3.isAddress(to)
-          complete = true
-          # always send from latest state
-          @sendCoin.sendTransaction to, amount, state, {gas: 3000000}, (err,res) ->
-            # get the transaction result and track it for updates
-            console.log 'did the thing', err, res
+    state = @currentState().toNumber()
+    if amount = parseInt prompt "How many to send?"
+      to = prompt "Who to send to? (address)"
+      if web3.isAddress(to)
+        complete = true
+        # always send from latest state
+        @sendCoin.sendTransaction to, amount, state, {gas: 3000000}, (err,res) ->
+          # get the transaction result and track it for updates
+          console.log 'did the thing', err, res
 
     unless complete
       alert 'Cancelled TX'
-
 
   'click .add-corporate-action' : (e, tmpl) ->
     thisContract = Contracts[@key]

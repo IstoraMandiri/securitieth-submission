@@ -15,11 +15,26 @@ Template.corpAction.events
     unless good
       alert 'tx cancelled'
 
+  'click .send-coin' : (e, tmpl) ->
+    state = tmpl.data.corpAct().toNumber()
+    if amount = parseInt prompt "How many to send?"
+      to = prompt "Who to send to? (address)"
+      if web3.isAddress(to)
+        complete = true
+        securityContract = Contracts.security.at(tmpl.data.parentSecurity())
+        # always send from latest state
+        securityContract.sendCoin.sendTransaction to, amount, state, {gas: 3000000}, (err,res) ->
+          # get the transaction result and track it for updates
+          console.log 'did the thing', err, res
+
+    unless complete
+      alert 'Cancelled TX'
+
+
 
 Template.corpAction.helpers
   stateBalance: ->
     Contracts.security.at(@parentSecurity()).balances(web3.eth.accounts[0], @corpAct()).toNumber()
-
 
   balance: ->
     web3.eth.getBalance(@address)
@@ -28,7 +43,8 @@ Template.corpAction.helpers
     methods = []
     for method in _.clone @abi
       thisMethod = _.clone method
-      if method.type isnt 'constructor'
+      if method.type isnt 'constructor' \
+      and method.key isnt 'execute'
         if method.constant
           thisMethod.value = @[method.name]()
         methods.push thisMethod

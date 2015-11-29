@@ -26,3 +26,10 @@ materialize:materialize
 raix:handlebar-helpers
 
 ethereum:web3
+ethereum:elements
+ethereum:dapp-styles
+ethereum:blocks
+ethereum:tools
+ethereum:accounts
+
+fortawesome:fontawesome

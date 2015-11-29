@@ -70,12 +70,8 @@ Template.registry.helpers
   securities : ->
     mainRegistry = Contracts.securityRegistry.at(Session.get('registryAddr'))
     registryItems = []
-    for i in [0...100]
-      securityAddress = mainRegistry.registry(i)
-      if !securityAddress \
-      or securityAddress is '0x0000000000000000000000000000000000000000' \
-      or securityAddress is '0x'
-        break
-      else
-        registryItems.push Contracts.security.at securityAddress
+    count = mainRegistry.count().toNumber()
+    if count
+      for i in [mainRegistry.count().toNumber()-1..0]
+        registryItems.push Contracts.security.at mainRegistry.registry(i)
     return registryItems
