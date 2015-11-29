@@ -70,7 +70,10 @@ Template.registry.helpers
   securities : ->
     mainRegistry = Contracts.securityRegistry.at(Session.get('registryAddr'))
     registryItems = []
-    count = mainRegistry.count().toNumber()
+    unless mainRegistry.count()
+      count = 0
+    else
+      count = mainRegistry.count().toNumber()
     if count
       for i in [mainRegistry.count().toNumber()-1..0]
         registryItems.push Contracts.security.at mainRegistry.registry(i)

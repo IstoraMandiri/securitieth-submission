@@ -4,6 +4,7 @@
       {{#with caInfo}}
         <h3>
           {{#if name}}
+            <i class='fa fa-fw fa-{{icon}}'></i>
             <span class="corp-state">#{{corpAct}}</span>
             <span class='title-modifier'>{{titleModifier}}</span>
             {{name}}
@@ -19,7 +20,10 @@
         <div class="btn execute-action">Execute {{stateBalance}}</div>
       {{/if}}
       {{#if stateBalance}}
-        <div class="btn pull-right send-coin-from-act">Send Coin</div>
+        <div class="btn pull-right send-coin-from-act">
+          <i class='fa fa-fw fa-mail-forward'></i>
+          Send Coin
+        </div>
       {{/if}}
     </div>
   </div>

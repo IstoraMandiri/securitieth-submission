@@ -9,12 +9,18 @@
       <h2>Mature Coins: {{matureBalance}}</h2>
       {{#if matureBalance}}
         <p class='right-align'>
-          <div class="btn send-coin">Send Coin</div>
+          <div class="btn send-coin">
+            <i class='fa fa-fw fa-mail-forward'></i>
+            Send Coin
+          </div>
         </p>
       {{/if}}
       <hr>
       {{#each availableActions}}
-        <div class="btn add-corporate-action" title='{{description}}'>{{name}}</div>
+        <div class="btn add-corporate-action" title='{{description}}'>
+          <i class='fa fa-fw fa-{{icon}}'></i>
+          {{name}}
+        </div>
       {{/each}}
       {{#each getCorporateActions}}
         {{> corpAction}}

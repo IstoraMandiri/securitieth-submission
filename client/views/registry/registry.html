@@ -14,7 +14,10 @@
       <hr>
       <div class="row">
         <div class="col s12">
-          <div class="btn create-security">New Security</div>
+          <div class="btn create-security">
+            <i class='fa fa-fw fa-briefcase'></i>
+            New Security
+          </div>
           {{#each securities}}
             {{> security}}
           {{/each}}
@@ -29,7 +32,10 @@
         or
       </div>
       <div class="col m5">
-        <a href="#" class='btn btn-block create-registry'>Create a registry</a>
+        <a href="#" class='btn btn-block create-registry'>
+          <i class='fa fa-fw fa-list-alt'></i>
+          Create a registry
+        </a>
       </div>
     </div>
   {{/if}}
