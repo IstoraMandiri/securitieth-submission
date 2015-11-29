@@ -1,6 +1,24 @@
+/*materialize twekas*/
+.card-content .row:last-child{
+  margin-bottom:0;
+}
+
+.card-content h1:first-child,
+.card-content h2:first-child,
+.card-content h3:first-child,
+.card-content h4:first-child{
+  margin-top:0;
+}
+
+/*end mateiralize tweaks*/
+
 body{
   background:#ccc;
 }
 .corp-action h4.address{
   font-size:1rem;
+}
+
+.create-registry-row{
+  line-height:36px;
 }

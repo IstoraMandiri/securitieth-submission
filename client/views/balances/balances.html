@@ -1,24 +1,47 @@
 <template name="balances">
-  <table>
-    <thead>
-      <tr>
-        <th>Account</th>
-        {{#each allStates}}
-          <th>{{.}}</th>
-        {{/each}}
-      </tr>
-    </thead>
-    <tbody>
-      {{#each accountStates}}
-        <tr>
-          <td>{{address}}</td>
-          {{#each balances}}
-            <td>
-              {{.}}
-            </td>
+  <p>
+    <a class='btn' href="/registry/{{registryAddress}}/{{thisSecurity.address}}">
+      <i class='fa fa-fw fa-chevron-left'></i>
+      Back
+    </a>
+  </p>
+
+  {{#with thisSecurity}}
+  <div class="card">
+    <div class="card-content">
+      <h2>
+        <i class='fa fa-fw fa-lock'></i>
+        {{title}}
+      </h2>
+      <p>A list of all balances for <code>{{address}}</code></p>
+      <table>
+        <thead>
+          <tr>
+            <th>Account</th>
+            {{#each allStates}}
+              <th>{{stateName}}</th>
+            {{/each}}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each accountStates}}
+            <tr>
+              <td>
+                {{#if isIssuer}}
+                  <i class='fa fa-fw fa-key'></i>
+                {{/if}}
+                <code>{{address}}</code>
+              </td>
+              {{#each balances}}
+                <td>
+                  {{.}}
+                </td>
+              {{/each}}
+            </tr>
           {{/each}}
-        </tr>
-      {{/each}}
-    </tbody>
-  </table>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {{/with}}
 </template>

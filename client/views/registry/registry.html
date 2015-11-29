@@ -1,43 +1,28 @@
-
 <template name="registry">
-  <div class="container center-align">
+  <a class="btn" href='/'>
+    <i class='fa fa-fw fa-chevron-left'></i>
+    Back
+  </a>
   <div class="row">
     <div class="col s12">
-      <h1>Securitieth Explorer</h1>
-      <h3>Your Eth: {{myEth}}</h3>
+      <h2>
+        <i class='fa fa-fw fa-list-alt'></i>
+        {{registry.title}}
+      </h2>
+      <p>{{registry.address}}</p>
     </div>
   </div>
-  {{#if registry.address}}
-      <h2>{{registry.title}}</h2>
-      <p>{{registry.address}}</p>
-      <div class="btn refresh">Refresh</div>
-      <hr>
-      <div class="row">
-        <div class="col s12">
-          <div class="btn create-security">
-            <i class='fa fa-fw fa-briefcase'></i>
-            New Security
-          </div>
-          {{#each securities}}
-            {{> security}}
-          {{/each}}
-        </div>
+  <div class="row">
+    <div class="col s12">
+      <div class="btn create-security">
+        <i class='fa fa-fw fa-briefcase'></i>
+        New Security
       </div>
-  {{else}}
-    <div class="row">
-      <div class="col m5">
-        <input class='set-registry' type="text" placeholder="Enter Registry Address"/>
-      </div>
-      <div class="col m2">
-        or
-      </div>
-      <div class="col m5">
-        <a href="#" class='btn btn-block create-registry'>
-          <i class='fa fa-fw fa-list-alt'></i>
-          Create a registry
-        </a>
+      <div class="section securities-list">
+        {{#each securities}}
+          {{> registryItem}}
+        {{/each}}
       </div>
     </div>
-  {{/if}}
   </div>
 </template>

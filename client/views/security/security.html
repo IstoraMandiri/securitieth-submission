@@ -1,31 +1,55 @@
 <template name="security">
-  <div class="security card">
-    <div class="card-content left-align">
-      <p>Security: {{address}}</p>
-      <p>Title: {{title}}</p>
-      <p>Issuer: {{issuer}}</p>
-      {{> balances}}
-      <hr>
-      <h2>Mature Coins: {{matureBalance}}</h2>
-      {{#if matureBalance}}
-        <p class='right-align'>
-          <div class="btn send-coin">
-            <i class='fa fa-fw fa-mail-forward'></i>
-            Send Coin
-          </div>
-        </p>
-      {{/if}}
-      <hr>
-      {{#each availableActions}}
-        <div class="btn add-corporate-action" title='{{description}}'>
-          <i class='fa fa-fw fa-{{icon}}'></i>
-          {{name}}
+  <p>
+    <a class='btn' href="/registry/{{registryAddress}}">
+      <i class='fa fa-fw fa-chevron-left'></i>
+      Back
+    </a>
+  </p>
+  {{#with security}}
+    <div class="security">
+      <h2>
+        <i class='fa fa-fw fa-lock'></i>
+        {{title}}
+      </h2>
+      <div class="row">
+        <div class="col m6 s12">
+          <p>{{address}}</p>
         </div>
-      {{/each}}
+        <div class="col m6 s12 right-align">
+            <a class='btn' href="/registry/{{registryAddress}}/{{address}}/balances">View Balances</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-content">
+          <h4>
+            <i class='fa fa-fw fa-credit-card'></i>
+            Mature Coins: {{matureBalance}}
+          </h4>
+          {{#if matureBalance}}
+            <p>
+              <div class="btn send-coin">
+                <i class='fa fa-fw fa-mail-forward'></i>
+                Send Coin
+              </div>
+            </p>
+          {{/if}}
+        </div>
+      </div>
+      <div class="section">
+        {{#if iAmIssuer}}
+          <p>As the owner of the security, you can create a new corporate action:</p>
+          {{#each availableActions}}
+            <div class="btn add-corporate-action" title='{{description}}'>
+              <i class='fa fa-fw fa-{{icon}}'></i>
+              {{name}}
+            </div>
+          {{/each}}
+        {{/if}}
+      </div>
       {{#each getCorporateActions}}
         {{> corpAction}}
-        <hr class='divider'>
       {{/each}}
     </div>
-  </div>
+  {{/with}}
+
 </template>

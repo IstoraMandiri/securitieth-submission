@@ -1,0 +1,14 @@
+<template name="registryItem">
+  <div class="card">
+    <div class="card-content">
+      <h3>
+        <i class='fa fa-fw fa-lock'></i>
+        <a href="/registry/{{registryAddress}}/{{address}}">
+          {{title}}
+        </a>
+      </h3>
+      <p>{{address}}</p>
+      <p>Accounts: {{accountsCount}}</p>
+    </div>
+  </div>
+</template>

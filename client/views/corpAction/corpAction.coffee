@@ -8,7 +8,8 @@ Template.corpAction.events
     if amount = prompt "[amount] How much to transact?", defaultAmount
       good = true
       # todo ignore this if not needed
-      extra = prompt "[extra] Extra option (or blank)"
+      # TODO add this back in once we havethe need to
+      # extra = prompt "[extra] Extra option (or blank)"
       securityContract.runCA.sendTransaction amount, state, extra, {gas:3000000}, (err,res) ->
         console.log 'executed', err, res
 
@@ -30,14 +31,10 @@ Template.corpAction.events
     unless complete
       alert 'Cancelled TX'
 
-
-getCa = (type) ->
-  return (val for val in corporateActions when val.key is type)[0]
-
 Template.corpAction.helpers
   caInfo : ->
     self = _.clone @
-    for key, val of getCa(@type)
+    for key, val of getCorporateAction(@type)
       self[key] = val
     return self
 

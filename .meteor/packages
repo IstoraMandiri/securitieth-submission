@@ -25,11 +25,10 @@ reactive-var
 materialize:materialize
 raix:handlebar-helpers
 
+kadira:flow-router
+kadira:blaze-layout
+
 ethereum:web3
-ethereum:elements
-ethereum:dapp-styles
-ethereum:blocks
 ethereum:tools
-ethereum:accounts
 
 fortawesome:fontawesome

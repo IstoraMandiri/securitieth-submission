@@ -1,0 +1,1 @@
+UI.registerHelper 'formatBalance', (bal) -> bal + " wei"

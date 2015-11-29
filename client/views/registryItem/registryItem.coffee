@@ -1,0 +1,1 @@
+UI.registerHelper 'registryAddress', -> FlowRouter.getParam('registryAddress')

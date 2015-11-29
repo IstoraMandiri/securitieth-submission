@@ -2,6 +2,27 @@
   <title>securitieth-meteor</title>
 </head>
 
-<body>
-  {{> registry}}
-</body>
+<template name="defaultLayout">
+    {{> header}}
+  <div class="container">
+    <div class="section">
+      {{> Template.dynamic template=main}}
+    </div>
+  </div>
+    {{> footer}}
+</template>
+
+<template name="footer">
+  <div class="container">
+    <div class="row center-align">
+      <div class="col s12">
+        <p>
+          UI by
+          <a href="http://hitchcott.com" target="_blank">
+            hitchcott
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</template>
