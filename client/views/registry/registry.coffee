@@ -1,29 +1,12 @@
-
-Session.set('registryItems', [])
-
-getUpdatedRegistry = ->
-  mainRegistry = Contracts.securityRegistry.at(Session.get('registryAddr'))
-  registryItems = []
-  for i in [0...100]
-    securityAddress = mainRegistry.registry(i)
-    if !securityAddress \
-    or securityAddress is '0x0000000000000000000000000000000000000000' \
-    or securityAddress is '0x'
-      break
-    else
-      registryItems.push securityAddress
-  return registryItems
-
-@updateRegistry = ->
-  registryItems = getUpdatedRegistry()
-  Session.set('registryItems', [])
+updateRegistry = ->
+  # force a re-render of all the templates
+  oldAddr = Session.get 'registryAddr'
+  Session.set 'registryAddr', false
   Tracker.flush()
-  Session.set('registryItems', registryItems)
-
-# TODO - listen to all events and rerender with mongo; nice pattern :)
+  Session.set 'registryAddr', oldAddr
 
 Template.registry.events
-  'click .refresh' : -> updateRegistry()
+  'click .refresh' : updateRegistry
 
   'click .create-registry' : ->
     unless title = prompt "Name Regsitry (32 chars or less)"
@@ -42,9 +25,6 @@ Template.registry.events
 
   'change .set-registry' : (e) ->
     Session.set 'registryAddr', e.currentTarget.value
-    setTimeout ->
-      updateRegistry()
-    , 1000
 
   'click .create-security' : ->
     # the current registry is
@@ -61,9 +41,6 @@ Template.registry.events
     else
       alert 'Cancelled'
 
-
-# Session.set('registryAddr', false)
-
 Template.registry.onCreated ->
 
   @myEth = new ReactiveVar();
@@ -71,6 +48,12 @@ Template.registry.onCreated ->
   @handle = Meteor.setInterval =>
     @myEth.set Math.round(web3.fromWei(web3.eth.getBalance(web3.eth.accounts[0]).toNumber(), "ether") * 100) / 100
   , 2000
+
+Template.registry.onRendered ->
+  # a hacky way to make sure web3 is ready
+  setTimeout ->
+    updateRegistry()
+  , 10
 
 Template.registry.onDestroyed ->
   Meteor.clearInterval @handle
@@ -84,5 +67,15 @@ Template.registry.helpers
       if Contracts.securityRegistry
         return Contracts.securityRegistry.at registryAddr
 
-  securities: ->
-    _.map Session.get('registryItems'), (addr) -> Contracts.security.at addr
+  securities : ->
+    mainRegistry = Contracts.securityRegistry.at(Session.get('registryAddr'))
+    registryItems = []
+    for i in [0...100]
+      securityAddress = mainRegistry.registry(i)
+      if !securityAddress \
+      or securityAddress is '0x0000000000000000000000000000000000000000' \
+      or securityAddress is '0x'
+        break
+      else
+        registryItems.push Contracts.security.at securityAddress
+    return registryItems
