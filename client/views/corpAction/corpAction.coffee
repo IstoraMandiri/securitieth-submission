@@ -15,7 +15,7 @@ Template.corpAction.events
     unless good
       alert 'tx cancelled'
 
-  'click .send-coin' : (e, tmpl) ->
+  'click .send-coin-from-act' : (e, tmpl) ->
     state = tmpl.data.corpAct().toNumber()
     if amount = parseInt prompt "How many to send?"
       to = prompt "Who to send to? (address)"
@@ -31,8 +31,19 @@ Template.corpAction.events
       alert 'Cancelled TX'
 
 
+getCa = (type) ->
+  return (val for val in corporateActions when val.key is type)[0]
 
 Template.corpAction.helpers
+  caInfo : ->
+    self = _.clone @
+    for key, val of getCa(@type)
+      self[key] = val
+    return self
+
+  titleModifier: ->
+    "#{@[@mainParam]().toString()}x"
+
   stateBalance: ->
     Contracts.security.at(@parentSecurity()).balances(web3.eth.accounts[0], @corpAct()).toNumber()
 
@@ -44,7 +55,7 @@ Template.corpAction.helpers
     for method in _.clone @abi
       thisMethod = _.clone method
       if method.type isnt 'constructor' \
-      and method.key isnt 'execute'
+      and method.type isnt 'execute'
         if method.constant
           thisMethod.value = @[method.name]()
         methods.push thisMethod

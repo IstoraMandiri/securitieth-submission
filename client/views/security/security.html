@@ -4,37 +4,13 @@
       <p>Security: {{address}}</p>
       <p>Title: {{title}}</p>
       <p>Issuer: {{issuer}}</p>
-      <p>Current State Balance: [{{myLatestState}}] {{getBalance myLatestState}}</p>
-      <p>Current State Balance: [{{currentState}}] {{getBalance currentState}}</p>
-      <p>Accounts Count: {{accountsCount}}</p>
-      <p>TODO: Balances</p>
+      {{> balances}}
       <hr>
-      <table>
-        <thead>
-          <tr>
-            <th>Account</th>
-            {{#each allStates}}
-              <th>{{.}}</th>
-            {{/each}}
-          </tr>
-        </thead>
-        <tbody>
-          {{#each accountStates}}
-            <tr>
-              <td>{{address}}</td>
-              {{#each balances}}
-                <td>
-                  {{.}}
-                </td>
-              {{/each}}
-            </tr>
-          {{/each}}
-        </tbody>
-      </table>
-      <hr>
-      <h2>Current Balance: {{getBalance myLatestState}}</h2>
-      {{#if getBalance myLatestState}}
-        <div class="btn send-coin">Send Coin</div>
+      <h2>Mature Coins: {{matureBalance}}</h2>
+      {{#if matureBalance}}
+        <p class='right-align'>
+          <div class="btn send-coin">Send Coin</div>
+        </p>
       {{/if}}
       <hr>
       {{#each availableActions}}

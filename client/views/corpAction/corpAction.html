@@ -1,13 +1,27 @@
 <template name="corpAction">
-  <p>Corp Action {{type}} - {{address}} - Wei: {{balance}}</p>
-  {{#each methods}}
-    <p>Method: {{name}} {{value}}</p>
-  {{/each}}
-  {{#if stateBalance}}
-    <div class="btn execute-action">Execute {{stateBalance}}</div>
-  {{/if}}
-  {{#if stateBalance}}
-    <div class="btn pull-right send-coin">Send Coin</div>
-  {{/if}}
+  <div class="card corp-action">
+    <div class="card-inner">
+      {{#with caInfo}}
+        <h3>
+          {{#if name}}
+            <span class="corp-state">#{{corpAct}}</span>
+            <span class='title-modifier'>{{titleModifier}}</span>
+            {{name}}
+          {{/if}}
+        </h3>
+        <h4 class='address'>{{address}}</h4>
+        <p>{{description}}</p>
+      {{/with}}
+
+      <p>Contract balance in Wei: {{balance}}</p>
+
+      {{#if stateBalance}}
+        <div class="btn execute-action">Execute {{stateBalance}}</div>
+      {{/if}}
+      {{#if stateBalance}}
+        <div class="btn pull-right send-coin-from-act">Send Coin</div>
+      {{/if}}
+    </div>
+  </div>
   <!-- TODO special UI for vote showing outcomes -->
 </template>

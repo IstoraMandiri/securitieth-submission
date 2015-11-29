@@ -1,0 +1,24 @@
+<template name="balances">
+  <table>
+    <thead>
+      <tr>
+        <th>Account</th>
+        {{#each allStates}}
+          <th>{{.}}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each accountStates}}
+        <tr>
+          <td>{{address}}</td>
+          {{#each balances}}
+            <td>
+              {{.}}
+            </td>
+          {{/each}}
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>
